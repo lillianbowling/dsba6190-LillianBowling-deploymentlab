@@ -24,7 +24,7 @@ terraform init
 
 Check your HCL formatting
 ```bash
-terraform fmt --recursive
+./terraform fmt
 ```
 
 See what Terraform will deploy
