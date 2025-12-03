@@ -63,9 +63,10 @@ resource "azurerm_subnet" "subnet" {
   service_endpoints    = ["Microsoft.Sql", "Microsoft.Storage"]
 }
 
-// Storage Account
 
-resource "azurerm_storage_account" "storage" {
+// Storage Account with Network Rules
+
+resource "azurerm_storage_account" "storage_network" {
   name                     = "sto${var.class_name}${var.student_name}${random_integer.deployment_id_suffix.result}"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
@@ -86,20 +87,20 @@ resource "azurerm_storage_account" "storage" {
 
 // SQL Server
 
-resource "azurerm_mssql_server" "sqlserver" {
-  name                         = "Lillian-sqlserver"
+resource "azurerm_mssql_server" "lilliansqlserver" {
+  name                         = "lilliansqlserver"
   resource_group_name          = azurerm_resource_group.rg.name
   location                     = azurerm_resource_group.rg.location
   version                      = "12.0"
-  administrator_login          = "LillianBowling"
+  administrator_login          = "lillianbowling"
   administrator_login_password = "4-v3ry-53cr37-p455w0rd"
 }
 
 // SQL Database
 
 resource "azurerm_mssql_database" "sqldatabase" {
-  name         = "Lillian-db"
-  server_id    = azurerm_mssql_server.sqlserver.id
+  name         = "lillian-db"
+  server_id    = azurerm_mssql_server.lilliansqlserver.id
   collation    = "SQL_Latin1_General_CP1_CI_AS"
   license_type = "LicenseIncluded"
   max_size_gb  = 2
@@ -120,7 +121,7 @@ resource "azurerm_mssql_database" "sqldatabase" {
 
 resource "azurerm_mssql_virtual_network_rule" "vnet_rule" {
   name      = "sql-vnet-rule"
-  server_id = azurerm_mssql_server.sqlserver.id
+  server_id = azurerm_mssql_server.lilliansqlserver.id
   subnet_id = azurerm_subnet.subnet.id
 }
 
